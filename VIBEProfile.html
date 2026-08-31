@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - VIBE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .profile-header {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .profile-info h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-info p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-header {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-create {
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .event-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            position: relative;
+        }
+
+        .event-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 0.3rem 0.8rem;
+            background: white;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #e74c3c;
+        }
+
+        .event-content {
+            padding: 1.5rem;
+        }
+
+        .event-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .event-info {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .event-info div {
+            margin-bottom: 0.5rem;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-view {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-edit {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-unfavorite {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .empty-state {
+            background: white;
+            padding: 3rem;
+            border-radius: 10px;
+            text-align: center;
+            color: #999;
+        }
+
+        .empty-state div:first-child {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            color: #667eea;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 2px solid #f0f0f0;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .event-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .event-content {
+            padding: 1.5rem;
+        }
+
+        .event-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .event-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .event-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-view {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-save {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+        }
+
+        .btn-save:hover {
+            background: #667eea;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="logo"> VIBE</div>
+    <ul class="nav-links">
+        <li><a href="VIBEhome.html">Home</a></li>
+        <li><a href="VIBEevents.html">Events</a></li>
+        <li><a href="VIBEProfile.html">My Profile</a></li>
+        <li><a href="VIBEabout.html">About</a></li>
+        <a href="logout.php" class="btn btn-logout">Logout</a>
+    </ul>
+</nav>
+
+
+<div class="container">
+
+    <!-- Holds User's favorited events -->
+    <!-- Pulls from Vibeevents, Vibehome -->
+    <!-- User can also favorite their own events from the profile page -->
+    <!-- Andrew -->
+    <div id="favorites" class="tab-content active">
+        <div class="section-header">
+            <h2>My Favorited Events</h2>
+        </div>
+        <div id="favoritesList" class="events-grid">
+        </div>
+    </div>
+
+    <!-- When Users create events they will -->
+    <!-- be displayed here. -->
+    <!-- Andrew -->
+    <div id="myevents" class="tab-content active">
+        <div class="section-header">
+            <h2>Events I Created</h2>
+            <a href="VIBEcreate.html" class="btn-create">+ Create Event</a>
+        </div>
+        <div id="myeventsList" class="events-grid">
+        </div>
+    </div>
+
+
+    <script>
+
+        // Load User created events via events.php
+        // Parsed from DBMS via JSON
+        // Andrew
+        async function loadMyEvents() {
+            const container = document.getElementById('myeventsList');
+
+            if (!container) {
+                console.error('Events not found.');
+                return;
+            }
+
+            try {
+                const response = await fetch('events.php?action=my_events');
+                const text = await response.text();
+                const events = JSON.parse(text);
+                container.innerHTML = '';
+
+                if (events.length === 0) {
+                    container.innerHTML = `
+                <div class="empty-state">
+                    <div>You haven't created any events yet</div>
+                    <div style="margin-top: 1rem;">Click the "Create Event" button to get started!</div>
+                </div>
+            `;
+                    return;
+                }
+
+
+
+                events.forEach(event => {
+                    const card = createUserEventCard(event);
+                    container.appendChild(card);
+                }); } catch (error) {
+                    console.error('Error loading events:', error);
+                }
+        }
+
+        // Create card for displaying User's created events
+        // Boilerplate stylings borrowed from home/events.
+        // Andrew
+
+        function createUserEventCard(event) {
+            const card = document.createElement('div');
+            card.className = 'event-card';
+
+            const eventDate = new Date(event.event_datetime);
+
+            const venue = event.venue_name || 'TBA';
+            const city = event.event_location || 'TBA';
+            const imageUrl = event.image_url || 'VIBEbackground.avif';
+
+            card.innerHTML = `
+            <div class="event-image" style="background-image: url('${imageUrl}'); background-size: cover; background-position: center;"></div>
+            <div class="event-content">
+                <div class="event-title">${event.artists}</div>
+                <div class="event-meta">
+                    <span>📅 ${eventDate}</span>
+                    <span>📍 ${venue}${city ? ', ' + city : ''}</span>
+                    ${event.event_description ? `<span>ℹ️ ${event.event_description}</span>` : ''}
+                </div>
+                <div class="event-actions">
+                     <button class="btn-small btn-view" onclick="viewEvent(${event.event_id})">View</button>
+                     <button class="btn-small btn-save" onclick="addToFavorites(${event.event_id})">❤️ Favorite</button>
+                     <button class="btn-small btn-delete" onclick="deleteEvent(${event.event_id})">Delete</button>
+                </div>
+            </div>
+        `;
+
+            return card;
+        }
+
+
+        // JSON parsed User favorites from favorites.php
+        // Andrew
+
+        async function addToFavorites(eventId) {
+
+            try {
+                const formData = new FormData();
+                formData.append('event_id', eventId);
+
+                const response = await fetch('favorites.php?action=add', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.text();
+
+                // Trim ensures safer calls and responses from Apache
+                const trimmedResult = result.trim();
+
+                if (trimmedResult === 'FAVORITE_ADDED') {
+                    alert('Event added to favorites!');
+                    loadFavorites();
+                } else if (trimmedResult === 'NOT_LOGGED_IN') {
+                    alert('Please log in to favorite events');
+                    window.location.href = 'VIBElogin.php';
+                } else if (trimmedResult === 'ALREADY_FAVORITED') {
+                    alert('This event is already in your favorites!');
+                } else {
+                    alert('Failed to add to favorites. Server said: ' + trimmedResult);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred: ' + error.message);
+            }
+        }
+
+        // Load User's favorited events to Favorites container
+        // Andrew
+
+        async function loadFavorites() {
+            const container = document.getElementById('favoritesList');
+
+            if (!container) {
+                console.error('Container favoritesList not found!');
+                return;
+            }
+
+            try {
+                const response = await fetch('favorites.php?action=list');
+
+                const text = await response.text();
+
+
+                // Try to parse from favorites.php via JSON
+
+                let events;
+                try {
+                    events = JSON.parse(text);
+                } catch (parseError) {
+                    return;
+                }
+
+                container.innerHTML = '';
+
+                if (events.length === 0) {
+                    container.innerHTML = `
+                <div class="empty-state">
+                    <div>No favorited events yet</div>
+                    <div style="margin-top: 1rem; color: #999;">Click the heart to favorite an event.</div>
+                </div>
+            `;
+                    return;
+                }
+
+                events.forEach(event => {
+                    const card = createFavoriteEventCard(event);
+                    container.appendChild(card);
+                }); } catch (error) {
+                console.error('Error loading favorites:', error);
+            }
+        }
+
+        // Create card for displaying User's Favorited events
+        // Boilerplate stylings borrowed from home/events.
+        // Andrew
+
+        function createFavoriteEventCard(event) {
+            const card = document.createElement('div');
+            card.className = 'event-card';
+
+            const eventDate = new Date(event.event_datetime);
+            const formattedDate = eventDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            const venue = event.venue_name || 'TBA';
+            const city = event.event_location || '';
+            const imageUrl = event.image_url || 'VIBEbackground.avif';
+
+            card.innerHTML = `
+        <div class="event-content">
+            <div class="event-image" style="background-image: url('${imageUrl}'); background-size: cover; background-position: center;"></div>
+            <div class="event-title">${event.artists}</div>
+            <div class="event-meta">
+                <span>📅 ${formattedDate}</span>
+                <span>📍 ${venue}${city ? ', ' + city : ''}</span>
+                ${event.event_description ? `<span>ℹ️ ${event.event_description}</span>` : ''}
+            </div>
+            <div class="event-actions">
+                <button class="btn-small btn-view" onclick="viewEvent(${event.event_id})">View</button>
+                <button class="btn-small btn-delete" onclick="removeFavorite(${event.event_id})">Remove ❤️</button>
+            </div>
+        </div>
+    `;
+
+            return card;
+        }
+
+        // User can 'unfavorite' an event
+        // Removes from curated 'favorited' events section on Profile
+        // Andrew
+
+        async function removeFavorite(eventId) {
+            if (!confirm('Remove this event from favorites?')) {
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('event_id', eventId);
+
+                const response = await fetch('favorites.php?action=remove', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.text();
+
+                if (result === 'FAVORITE_REMOVED') {
+                    alert('Removed from favorites!');
+                    loadFavorites(); // Reload after unfavorite
+                } else {
+                    alert('Failed to remove from favorites');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred');
+            }
+        }
+
+        // Function for a User to delete their created events
+        // User can only delete events that they have created
+        // Andrew
+
+        async function deleteEvent(eventId) {
+            if (!confirm('Are you sure you want to delete this event? This cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('event_id', eventId);
+
+                const response = await fetch('events.php?action=delete', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.text();
+
+                if (result === 'EVENT_DELETED') {
+                    alert('Event deleted successfully!');
+                    loadMyEvents();
+                } else {
+                    alert('Failed to delete event');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the event');
+            }
+        }
+
+
+        // Load events when page loads
+        // Andrew
+        window.addEventListener('DOMContentLoaded', function() {
+            loadMyEvents();
+            loadFavorites();
+        });
+    </script>
+</body>
+</html>

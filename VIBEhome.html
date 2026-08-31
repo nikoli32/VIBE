@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIBE - Event Management Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .main-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            max-width: 1400px;
+            margin: 2rem auto;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1rem;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.6rem 1.2rem;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 2px solid #f0f0f0;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .event-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .event-content {
+            padding: 1.5rem;
+        }
+
+        .event-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .event-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .event-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .event-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            padding: 0.3rem 0.8rem;
+            background: #f0f0f0;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #667eea;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-view {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-save {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        @media (max-width: 768px) {
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="logo"> VIBE</div>
+    <ul class="nav-links">
+        <li><a href="VIBEhome.html">Home</a></li>
+        <li><a href="VIBEevents.html">Events</a></li>
+        <li><a href="VIBElogin.html">Profile</a></li>
+        <li><a href="VIBEabout.html">About</a></li>
+    </ul>
+    <div class="auth-buttons">
+        <button class="btn btn-secondary" onclick="window.location.href = 'VIBElogin.html' ">Login</button>
+        <a href="logout.php" class="btn btn-logout">Logout</a>
+    </div>
+</nav>
+
+<main class="main-content">
+    <div class="header-section">
+        <h2>Browse Upcoming Local Events</h2>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" placeholder="Search events, artists, venues..." id="searchInput">
+        <button class="btn btn-primary" onclick="searchEvents()">Search</button>
+    </div>
+    <div class="events-grid" id="eventsGrid">
+    </div>
+</main>
+
+<script>
+
+    // TicketMaster API Config
+
+    const TICKETMASTER_API_KEY = 'niMmKzhTHhX6fMnkNId9Ikf88AZBDspN';
+    const TICKETMASTER_BASE_URL = 'https://app.ticketmaster.com/discovery/v2';
+
+    // Fetch events from TicketMaster API
+    // Doc. quick reference: https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/
+    // Andrew
+
+    async function fetchTicketMasterEvents(keyword = '', city = '', startDate = '', size = 20) {
+        try {
+            const params = new URLSearchParams({
+                apikey: TICKETMASTER_API_KEY,
+                keyword: keyword,
+                city: 'Greenville',
+                stateCode: 'SC',
+                radius: '25',
+                sort: 'date,asc'
+            });
+
+            if (startDate) {
+                params.append('startDateTime', startDate);
+            }
+
+            const response = await fetch(`${TICKETMASTER_BASE_URL}/events.json?${params}`);
+            const data = await response.json();
+
+            if (data._embedded && data._embedded.events) {
+                return data._embedded.events;
+            }
+            return [];
+        } catch (error) {
+            console.error('Error fetching TicketMaster events:', error);
+            return [];
+        }
+    }
+
+    // Load TicketMaster events on page load
+    // Andrew
+    async function loadTicketMasterEvents() {
+        const events = await fetchTicketMasterEvents('', '', '', 12);
+        displayTicketMasterEvents(events);
+    }
+
+    // Display TicketMaster events in the grid
+    // Andrew
+    function displayTicketMasterEvents(events) {
+        const eventsGrid = document.getElementById('eventsGrid');
+
+        events.forEach(event => {
+            const eventCard = createTicketMasterEventCard(event);
+            eventsGrid.appendChild(eventCard);
+        });
+    }
+
+    // Create event card from TicketMaster data
+    // Andrew
+    function createTicketMasterEventCard(event) {
+        const card = document.createElement('div');
+        card.className = 'event-card';
+
+        const name = event.name;
+        const date = new Date(event.dates.start.localDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        const emoji = '🎵';
+        const venue = event._embedded?.venues?.[0]?.name || 'TBA';
+        const city = event._embedded?.venues?.[0]?.city?.name || '';
+        const priceRange = event.priceRanges ?
+            `${event.priceRanges[0].min} - ${event.priceRanges[0].max}` :
+            'Price TBA';
+        const category = event.classifications?.[0]?.segment?.name || 'Other';
+        const imageUrl = event.images?.[0]?.url || '';
+        const ticketUrl = event.url;
+
+
+        // Boilerplate html template for Event cards
+
+        card.innerHTML = `
+            <div class="event-image" style="${imageUrl ? `background-image: url(${imageUrl}); background-size: cover; background-position: center;` : ''}">${!imageUrl ? emoji : ''}</div>
+            <div class="event-content">
+                <div class="event-title">${name}</div>
+                <div class="event-meta">
+                    <span>📅 ${date}</span>
+                    <span>📍 ${venue}${city ? ', ' + city : ''}</span>
+                    <span> ${priceRange}</span>
+                     <div class="event-actions">
+                        <button class="btn-small btn-view" onclick="window.open('${ticketUrl}', '_blank')">Buy Tickets</button>
+                        <button class="btn-small btn-save" onclick="addToFavorites(${event.event_id})">❤️ Favorite</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        return card;
+    }
+
+    // Create card for displaying User's created events
+    // Boilerplate stylings borrowed from home/events.
+    // Andrew
+
+    function createUserEventCard(event) {
+        const card = document.createElement('div');
+        card.className = 'event-card';
+
+        const eventDate = new Date(event.event_datetime);
+
+        const venue = event.venue_name || 'TBA';
+        const city = event.event_location || 'TBA';
+        const imageUrl = event.image_url || 'VIBEbackground.avif';
+
+        card.innerHTML = `
+            <div class="event-image" style="background-image: url('${imageUrl}'); background-size: cover; background-position: center;"></div>
+            <div class="event-content">
+                <div class="event-title">${event.artists}</div>
+                <div class="event-meta">
+                    <span>📅 ${eventDate}</span>
+                    <span>📍 ${venue}${city ? ', ' + city : ''}</span>
+                    ${event.event_description ? `<span>ℹ️ ${event.event_description}</span>` : ''}
+                </div>
+                <div class="event-actions">
+                     <button class="btn-small btn-view" onclick="viewEvent(${event.event_id})">View</button>
+                     <button class="btn-small btn-save" onclick="addToFavorites(${event.event_id})">❤️ Favorite</button>
+                     <button class="btn-small btn-delete" onclick="deleteEvent(${event.event_id})">Delete</button>
+                </div>
+            </div>
+        `;
+
+        return card;
+    }
+
+    // Save event to User's favorites on Profile page.
+    // Trying to debug
+    // Andrew
+    async function saveEvent(eventId, source) {
+        const userId = getCurrentUserId();
+
+        if (!userId) {
+            alert('Please login to save events');
+            window.location.href = 'VIBElogin.html';
+            return;
+        }
+
+        try {
+            const response = await fetch('favorites.php?action=add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    event_id: eventId,
+                    user_id: userId
+                })
+            });
+
+            const result = await response.text();
+
+            if (result === 'FAVORITE_ADDED') {
+                alert('Event saved to favorites!');
+            } else {
+                alert('Failed to save event');
+            }
+        } catch (error) {
+            console.error('Error saving event:', error);
+            alert('Error trying to save event.');
+        }
+    }
+
+    // Get current user ID
+    // Track user session across site
+    // Andrew
+    function getCurrentUserId() {
+        return sessionStorage.getItem('userId') || null;
+    }
+
+    // Display functions for page modals
+
+    function showCreateEventModal() {
+        document.getElementById('createEventModal').classList.add('active');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+    }
+
+
+    // Search API fetched events
+    // Andrew
+
+    async function searchEvents() {
+        const query = document.getElementById('searchInput').value;
+        const eventsGrid = document.getElementById('eventsGrid');
+
+        eventsGrid.innerHTML = '';
+
+        const tmEvents = await fetchTicketMasterEvents(query);
+        displayTicketMasterEvents(tmEvents);
+
+        await searchUserEvents(query);
+    }
+
+    // Search user-created events from database
+    // Andrew
+    async function searchUserEvents(query) {
+        try {
+            const response = await fetch(`events.php?action=list`);
+            const userEvents = await response.json();
+
+            const eventsGrid = document.getElementById('eventsGrid');
+            userEvents.forEach(event => {
+                const card = createUserEventCard(event);
+                eventsGrid.appendChild(card);
+            });
+        } catch (error) {
+            console.error('Error searching user events:', error);
+        }
+    }
+
+
+    // Load events from both user and API to home page
+    // Andrew
+
+    async function loadAllEvents() {
+        const eventsGrid = document.getElementById('eventsGrid');
+        eventsGrid.innerHTML = '';
+
+        await loadTicketMasterEvents();
+        await loadUserCreatedEvents();
+    }
+
+
+    async function loadUserCreatedEvents() {
+        try {
+            const response = await fetch('events.php?action=list');
+            const userEvents = await response.json();
+
+            userEvents.forEach(event => {
+                const card = createUserEventCard(event);
+                document.getElementById('eventsGrid').appendChild(card);
+            });
+        } catch (error) {
+            console.error('Error loading user events:', error);
+        }
+    }
+
+    // Initialize VIBE home page
+
+    window.addEventListener('DOMContentLoaded', () => {
+        loadAllEvents();
+    });
+
+    let currentUser = null;
+
+</script>
+</body>
+</html>
